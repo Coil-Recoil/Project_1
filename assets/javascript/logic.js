@@ -1,20 +1,4 @@
 $(document).ready(function () {
-
-    //Firebase
-    
-    // var config = {
-    //     apiKey: "SyBhvDWxzgJSUD0VuEd4bszwgflEB5KpvSg",
-    //     authDomain: "test-820ea.firebaseapp.com",
-    //     databaseURL: "https://test-820ea.firebaseio.com",
-    //     projectId: "test-820ea",
-    //     storageBucket: "test-820ea.appspot.com",
-    //     messagingSenderId: "776526119"
-    // };
-    // firebase.initializeApp(config);
-    
-    // // Declare Variables
-    
-    // var dataRef = firebase.database();
     var name = "";
     var location = "";
     var start = 0;
@@ -42,15 +26,13 @@ $(document).ready(function () {
         }).done(function (response) {
             console.log(response);
     
-    //Store Results in Firebase
+            var results = response.events;
     
-            var results = response.data;
-    
-            // for  (i = 0; i < location.length; i++) {
-            //     var eventName = dataRef.ref().push({
-            //         name: addName,
-            //     });
-            // }
+            for  (i = 0; i < results.length; i++) {
+               
+                var event = results[i].name.text;
+                $("#name").text(event);
+            }
         });
     }
     
