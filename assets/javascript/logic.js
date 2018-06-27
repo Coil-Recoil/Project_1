@@ -31,10 +31,16 @@ $(document).ready(function () {
             for  (i = 0; i < results.length; i++) {
                
                 var event = results[i].name.text;
-                $("#name").text(event);
+                var eventLink= results[i].url;
+                console.log(eventLink);
+                var cell= $("<tr><td>" + "<a href='" + eventLink + "'>" + event + "</a></td></tr>");
+                $("#eventResults").append(cell);
+
+                
             }
         });
     }
+    
     
     // $('.btn').done.on(function (results) {
     //     var addName = $("#addName").val().trim();
