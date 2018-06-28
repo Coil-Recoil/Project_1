@@ -1,6 +1,6 @@
 .container {
     background: rgba(0, 0, 0, 0);
-    background-repeat: no-repeat;
+    background-repeat: repeat-y;
     background-size: cover;
     margin: auto;
     min-width: 90%;
@@ -26,12 +26,12 @@
 }
 
 body {
-    font-family: 'Roboto', sans-serif;
-    text-align: left;
+    font-family: 'Arial', sans-serif;
+    font-size: 25px;
     background-color: black;
     background: url("../images/download-free-studio-ghibli-wallpapers-miyazaki-anime-43-576146985e007.jpg");
    background-size: stretch;
-   background-repeat: no-repeat;
+   background-repeat: repeat-y;
    color: white;
 }
 
@@ -81,15 +81,12 @@ text-shadow: black 4px 4px 4px;
     background: rgba(0, 0, 0, 0.8);
     border-radius: 0px 0px 10px 10px;
     border: solid white 2px; 
+    min-height: 100px;
 }
 
 .jumbotron img{
     max-width:65%;
     max-height:50%;
-}
-
-.events {
-    height: 900px;
 }
 
 .zipbox {
@@ -103,7 +100,36 @@ text-shadow: black 4px 4px 4px;
 label {
 padding: 10px 10px 0px 0px;
 text-align: center;
-font-family: 'Luckiest Guy';
-font-size: 27px;
+font-family: 'Arial', sans-serif;
+    font-size: 25px;
 letter-spacing: 2px;
 }
+
+.event-head {
+    font-size: 20px;
+    text-align: center;
+}
+
+#addRow {
+    border-bottom: 1px solid #ddd;
+    border-spacing: 2px;
+    border-collapse: collapse;
+    padding: 10px;
+    font-family: 'Arial', sans-serif;
+    font-size: 25px;
+}
+
+a:link {
+    color: white;
+    }
+    a:visited {
+    color: gray;
+    }
+    a:hover {
+    color: rgb(255, 155, 0, 0.9);
+    }
+
+    #icons {
+        width: 82px;
+        height: 82px;
+    }
