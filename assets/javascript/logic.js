@@ -1,96 +1,97 @@
 $(document).ready(function () {
 
-    //Firebase
-    
-    var config = {
-        apiKey: "SyBhvDWxzgJSUD0VuEd4bszwgflEB5KpvSg",
-        authDomain: "test-820ea.firebaseapp.com",
-        databaseURL: "https://test-820ea.firebaseio.com",
-        projectId: "test-820ea",
-        storageBucket: "test-820ea.appspot.com",
-        messagingSenderId: "776526119"
-    };
-    firebase.initializeApp(config);
-    
-    // Declare Variables
-    
-    var dataRef = firebase.database();
-    var name = "";
     var location = "";
-    var start = 0;
-    var end = 0;
-    var price = 0;
-    
+
     // Take Zip and Send to APIs
-    
-    $('.btn').on('click', function () {
-        var zipCode = $("#zipCode").val().trim();
-    
-    $(document).on("click", ".submit", eventInfo);
-    })
-    
+
+    $("#zipCode").on("click", eventInfo);
+
     // Call API 
-        
+
     function eventInfo() {
-        var year = $(this).attr("year-name");
-        var queryURL = "https://www.eventbriteapi.com/v3/users/me/?token=YMCHN5J2OTS2WEM2FF2" + year + "&api_key=dc6zaTOxFJmzC&limit=10";
-    
+        event.preventDefault();
+
+        location = $("#zip-input").val().trim();
+        var queryURL = "https://www.eventbriteapi.com/v3/events/search/?location.address=" + location + "&start_date.keyword=today&token=YMCHN5J2AOTS2WEM2FF2";
+
+
         $.ajax({
             url: queryURL,
-            method: "GET", "relative_url":"users/me"
+            method: "GET",
         }).done(function (response) {
-    
-    // Store Results in Firebase
-    
-            var results = response.data;
-    
-            for (var i = 0; i < results.length; i++) {
-                var eventName = dataRef.ref().push({
-                    name: addName,
-            });
-        };
-    });
-    
-    $('.btn').done.on(function (results) {
-        var addName = $("#addName").val().trim();
-        var addVenue = $("#addVenue").val().trim();
-        var addStart = $("#addStart").val().trim();
-        var addEnd = $("#addEnd").val().trim();
-        var addPrice = $("#addPrice").val().trim();
-    
-        dataRef.ref().push({
-            name: addName,
-            venue: addVenue,
-            start: addStart,
-            end: addEnd,
-            price: addPrice,
+            console.log(response);
+
+            var results = response.events;
+
+            //Display Info
+
+            for (i = 0; i < results.length; i++) {
+
+                var event = results[i].name.text;
+                var eventLink = results[i].url;
+                var eventName = "<a href='" + eventLink + "'>" + event + "</a>";
+                var eventTime = moment(results[i].start.local).format("LT, ddd");
+                console.log(eventTime);
+                console.log(eventLink);
+
+                $("#eventResults").append(
+                    "<tr><td id='addRow'>" + eventName +
+                    "</td><td id='addRow'>" + eventTime +
+                    "</td></tr>");
+            }
+        });
+    }
+
+    $("#zipCode").on("click", weatherInfo);
+
+    function weatherInfo() {
+        event.preventDefault();
+
+        location = $("#zip-input").val().trim();
+        var queryURL = "https://api.openweathermap.org/data/2.5/forecast?zip=" + location + ",us&APPID=815a2a795482a610cc6a76c55b68ac5a";
+
+        $.ajax({
+            url: queryURL,
+            method: "GET"
         })
-    
-        $("#addName").val("");
-        $("#addVenue").val("");
-        $("#addStart").val("");
-        $("#addEnd").val("");
-        $("#addPrice").val("");
-    
-        return false;
-    });
-    
-    // Link up Firebase realtime data to HTML DOM
-    
-    dataRef.ref().on("child_added", function (childSnapshot, prevChildKey) {
-    
-        var name = childSnapshot.val().name;
-        var venue = childSnapshot.val().venue;
-        var start = childSnapshot.val().start;
-        var end = childSnapshot.val().end;
-        var price = childSnapshot.val().price;
-    
-        $("#eventResults").append(
-            "<tr><td>" + name +
-            "</td><td>" + venue +
-            "</td><td>" + start +
-            "</td><td>" + end +
-            "</td><td>" + price +
-            "</td></tr>");
-    },
-    ); 
+
+            .then(function (response) {
+                console.log(response);
+                var weatherData = response.list;
+                $("#hourlyForecast").empty();
+
+                var forecastSlotsToDisplay = 6;
+                var bounds = weatherData.length >= forecastSlotsToDisplay ? 5 : weatherData.length;
+
+                for (var i = 0; i <= bounds; i++) {
+                    var time = moment.unix(weatherData[i].dt);
+                    var currentTime = moment();
+                    var diff = currentTime.diff(time)
+
+                    if (diff > 0) {
+                        continue;
+                    }
+                    var displayTime = time.format("LT, ddd");
+                    var pullTemp = weatherData[i].main.temp;
+                    var displayTemp = parseInt((pullTemp - 273.15) * 1.8) + 32;
+                    //var displayWeather = weatherData[i].weather[0].description;
+                    var pullIcon = weatherData[i].weather[0].icon;
+                    var displayIcon = "<img src='http://openweathermap.org/img/w/" + pullIcon + ".png' id='icons'>";
+
+                    $("#weatherTime").append(
+                        "<th id='addRow'>" + displayTime +
+                        "</th>"
+                    )
+
+                    $("#weatherIcons").append(
+                        "<td>" + displayIcon +
+                        "</td>"
+                    )
+
+                    $("#hourlyForecast").append(
+                        "<td>" + displayTemp +
+                        "</td>")
+                }
+            });
+    }
+});
